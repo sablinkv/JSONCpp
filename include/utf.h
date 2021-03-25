@@ -322,7 +322,7 @@ struct Utf
 using Utf8		= Utf<char, UtfTraits<char>>;
 using Uft16		= Utf<char16_t, UtfTraits<char16_t>>;
 using Utf32		= Utf<char32_t, UtfTraits<char32_t>>;
-using UftW		= Utf<wchar_t, UtfTraits<wchar_t>>;
+using UtfW		= Utf<wchar_t, UtfTraits<wchar_t>>;
 using UftAscii	= Utf<char, AsciiTraits<char>>;
 
 JSONCPP_NAMESPACE_END
