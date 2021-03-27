@@ -87,12 +87,12 @@ protected:
 class JSON_API JsonStreamReader : public JsonStringReader
 {
 protected:
-    explicit JsonStreamReader(std::basic_istream<char>& OStream);
+    explicit JsonStreamReader(std::basic_istream<char>& IStream);
 
 public:
     virtual ~JsonStreamReader() = default;
 
-    JSON_NODISCARD static auto Create(std::basic_istream<char>& OStream)    {   return std::unique_ptr<JsonStreamReader>(new JsonStreamReader(OStream));    }
+    JSON_NODISCARD static auto Create(std::basic_istream<char>& IStream)    {   return std::unique_ptr<JsonStreamReader>(new JsonStreamReader(IStream));    }
 };
 
 class JSON_API JsonReaderFactory
@@ -103,7 +103,7 @@ class JSON_API JsonReaderFactory
 public:
     template<class String, class = EnableIfString<String>>
     JSON_NODISCARD static auto Create(String&& Content)                    {   return JsonStringReader::Create(std::move(Content));    }
-    JSON_NODISCARD static auto Create(std::basic_istream<char>& OStream)   {   return JsonStreamReader::Create(OStream);               }
+    JSON_NODISCARD static auto Create(std::basic_istream<char>& IStream)   {   return JsonStreamReader::Create(IStream);               }
 
 };
 

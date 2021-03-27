@@ -384,9 +384,9 @@ bool JsonStringReader::Parse(std::shared_ptr<JsonValue>& Root)
     return true;
 }
 
-JsonStreamReader::JsonStreamReader(std::basic_istream<char>& OStream)
+JsonStreamReader::JsonStreamReader(std::basic_istream<char>& IStream)
 {
     std::ostringstream Doc;
-    Doc << OStream.rdbuf();
+    Doc << IStream.rdbuf();
     m_Content = std::move(Doc.str());
 }
