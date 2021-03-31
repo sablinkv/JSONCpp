@@ -129,7 +129,7 @@ struct UtfTraits<char16_t>
 	{
 		if (First == Last)
 			return First;
-		
+
 		auto Char = *First++;
 		auto Byte = Length(Char);
 
@@ -158,7 +158,7 @@ struct UtfTraits<char32_t>
 	using CharType = char32_t;
 
 	static int Length(const CharType& Char)
-	{	
+	{
 		return (Char < 0x110000U ? 1 : -1);
 	}
 
@@ -184,7 +184,7 @@ struct UtfTraits<char32_t>
 };
 
 template<>
-struct UtfTraits<wchar_t> 
+struct UtfTraits<wchar_t>
 {
 	using CharType = wchar_t;
 	using TraitsType = std::conditional<sizeof(CharType) < sizeof(char32_t), UtfTraits<char16_t>, UtfTraits<char32_t>>::type;
@@ -262,7 +262,7 @@ struct Utf
 		Encode(CodePoint, std::ostream_iterator<CharType, CharType>(SStream));
 		return SStream.str();
 	}
-	
+
 	template<class InIter>
 	static InIter Decode(InIter First, InIter Last, uint32_t& CodePoint)
 	{
@@ -313,9 +313,20 @@ struct Utf
 	template<class Target>
 	static std::basic_string<Target> Transcode(const CharType* Src, size_t Length)
 	{
+		JSON_ASSERT(Src != nullptr);
 		std::basic_stringstream<Target> SStream;
 		Transcode<Target>(Src, Src + Length, std::ostream_iterator<Target, Target>(SStream));
 		return SStream.str();
+	}
+
+	template<class Target>
+	static std::basic_string<Target> Transcode(const CharType* Src)
+	{
+		JSON_ASSERT(Src != nullptr);
+		const CharType* Ptr = Src;
+		while (*Ptr) ++Ptr;
+		uint32_t Length = static_cast<uint32_t>(Ptr - Src);
+		return Transcode<Target>(Src, Length);
 	}
 };
 
