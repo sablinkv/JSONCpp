@@ -361,7 +361,7 @@ void JsonReader::AppendJsonIdentifier(std::string&& String)
     Current.Identifier = std::move(String);
 }
 
-bool JsonStringReader::Parse(std::shared_ptr<JsonValue>& Root)
+bool JsonStringReader::Deserialize(std::shared_ptr<JsonValue>& Root)
 {
     ParseState OutState;
     JsonReader::Parse(m_Content.c_str(), m_Content.c_str() + m_Content.size(), OutState);

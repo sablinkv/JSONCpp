@@ -32,7 +32,7 @@ protected:
     void        Parse(const char* First, const char* Last, ParseState& OutState);
 
 public:
-    virtual bool Parse(std::shared_ptr<JsonValue>& Root) = 0;
+    virtual bool Deserialize(std::shared_ptr<JsonValue>& Root) = 0;
 
 private:
     const char* SkipWhiteSpace(const char* First, const char* Last) const;
@@ -78,7 +78,7 @@ public:
     JSON_NODISCARD static auto Create(const std::string& Content)   {   return std::unique_ptr<JsonStringReader>(new JsonStringReader(Content));                }
     JSON_NODISCARD static auto Create(std::string&& Content)        {   return std::unique_ptr<JsonStringReader>(new JsonStringReader(std::move(Content)));     }
 
-    bool Parse(std::shared_ptr<JsonValue>& Root) override;
+    bool Deserialize(std::shared_ptr<JsonValue>& Root) override;
 
 protected:
     std::string m_Content;
@@ -102,8 +102,8 @@ class JSON_API JsonReaderFactory
 
 public:
     template<class String, class = EnableIfString<String>>
-    JSON_NODISCARD static auto Create(String&& Content)                    {   return JsonStringReader::Create(std::move(Content));    }
-    JSON_NODISCARD static auto Create(std::basic_istream<char>& IStream)   {   return JsonStreamReader::Create(IStream);               }
+    JSON_NODISCARD static auto Create(String&& Content)                    {   return JsonStringReader::Create(std::forward<String>(Content));  }
+    JSON_NODISCARD static auto Create(std::basic_istream<char>& IStream)   {   return JsonStreamReader::Create(IStream);                        }
 
 };
 

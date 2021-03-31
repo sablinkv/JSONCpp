@@ -92,6 +92,6 @@ std::shared_ptr<JsonValue> Literal::operator""_json(const char* Src, size_t Leng
 {
 	auto Reader = JsonReaderFactory::Create(std::string(Src, Length));
 	std::shared_ptr<JsonValue> Doc;
-	Reader->Parse(Doc);
+	Reader->Deserialize(Doc);
 	return Doc;
 }
