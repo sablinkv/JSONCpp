@@ -241,7 +241,7 @@ bool JsonArray::GetArray(PointerArray& OutArray)
 bool JsonArray::GetArray(CPointerArray& OutArray) const
 {
     OutArray = &m_Array;
-    return false;
+    return true;
 }
 
 JsonArray::ValueType& JsonArray::At(uint32_t Index)
@@ -284,16 +284,14 @@ JsonObject& JsonObject::operator=(ContainerType&& Values) noexcept
 JsonObject::MappedType& JsonObject::At(const KeyType& Identifier)
 {
     auto Found = m_Values.find(Identifier);
-    bool IsObjectFound = Found != m_Values.end();
-    JSON_ASSERT_MESSAGE(IsObjectFound, "Object \'%s\' - not found", Identifier.c_str());
+    JSON_ASSERT_MESSAGE(Found != m_Values.end(), "Identifier \'%s\' - not found.", Identifier.c_str());
     return Found->second;
 }
 
 const JsonObject::MappedType& JsonObject::At(const KeyType& Identifier) const
 {
     auto Found = m_Values.find(Identifier);
-    bool IsObjectFound = Found != m_Values.end();
-    JSON_ASSERT_MESSAGE(IsObjectFound, "Object \'%s\' - not found", Identifier.c_str());
+    JSON_ASSERT_MESSAGE(Found != m_Values.end(), "Identifier \'%s\' - not found.", Identifier.c_str());
     return Found->second;
 }
 
@@ -377,5 +375,5 @@ bool JsonObject::GetMap(PointerMap& OutMap)
 bool JsonObject::GetMap(CPointerMap& OutMap) const
 {
     OutMap = &m_Values;
-    return false;
+    return true;
 }
