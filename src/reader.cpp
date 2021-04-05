@@ -390,3 +390,23 @@ JsonStreamReader::JsonStreamReader(std::basic_istream<char>& IStream)
     Doc << IStream.rdbuf();
     m_Content = std::move(Doc.str());
 }
+
+bool Deserializer::operator()(JsonReader& Reader, JsonValue& Root) const
+{
+    std::shared_ptr<JsonValue> Temp;
+    if (Reader.Deserialize(Temp))
+    {
+        switch (Root.GetType())
+        {
+        case JsonType::Array:
+            static_cast<JsonArray&>(Root) = std::move(Temp->AsArray());
+            break;
+        case JsonType::Object: 
+            static_cast<JsonObject&>(Root) = std::move(Temp->AsObject());
+            break;
+        default: return false;
+        }
+        return true;
+    }
+    return false;
+}

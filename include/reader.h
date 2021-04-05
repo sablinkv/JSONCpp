@@ -107,4 +107,10 @@ public:
 
 };
 
+struct JSON_API Deserializer
+{
+    bool operator()(JsonReader& Reader, JsonValue& Root) const;
+    bool operator()(JsonReader& Reader, std::shared_ptr<JsonValue>& Root) const {   return Reader.Deserialize(Root);    }
+};
+
 JSONCPP_NAMESPACE_END
