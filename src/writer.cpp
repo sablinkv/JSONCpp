@@ -128,3 +128,21 @@ void JsonStringWriter::Serialize(const JsonValue* Root) const
 	JsonWriter::Write(OStream, Root);
 	*m_OutString = OStream.str();
 }
+
+bool Serializer::operator()(const JsonValue& Root, JsonWriter& Writer) const
+{
+	switch (Root.GetType())
+	{
+	case JsonType::Array: JSON_FALLTHROUGH;
+	case JsonType::Object: Writer.Serialize(static_cast<const JsonValue*>(&Root));
+	default: return false;
+	}
+	return true;
+}
+
+bool Serializer::operator()(const std::shared_ptr<JsonValue>& Root, JsonWriter& Writer) const
+{
+	if (Root == nullptr)
+		return false;
+	return this->operator()(*Root, Writer);
+}

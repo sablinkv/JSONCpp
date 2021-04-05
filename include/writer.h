@@ -76,4 +76,10 @@ public:
 	JSON_NODISCARD static auto Create(String* OutString, int32_t Indent = 2)	{	return JsonStringWriter::Create(OutString, Indent);	}
 };
 
+struct JSON_API Serializer
+{
+	bool operator()(const JsonValue& Root, JsonWriter& Writer) const;
+	bool operator()(const std::shared_ptr<JsonValue>& Root, JsonWriter& Writer) const;
+};
+
 JSONCPP_NAMESPACE_END
