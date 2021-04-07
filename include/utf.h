@@ -1,6 +1,7 @@
 #pragma once
 #include "error.h"
 #include <sstream>
+#include <iterator>
 
 JSONCPP_NAMESPACE_BEGIN
 
@@ -191,7 +192,7 @@ struct UtfTraits<wchar_t>
 
 	static int Length(const CharType& Char)
 	{
-		TraitsType::Length(Char);
+		return TraitsType::Length(Char);
 	}
 
 	template<class OutIter>
