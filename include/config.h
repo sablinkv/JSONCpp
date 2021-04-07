@@ -86,15 +86,17 @@
 
 //
 #if JSON_EXCEPTION
-#define JSON_ASSERT_MESSAGE(cond, msg, ...)						\
-        do {													\
-            if (!(cond))										\
-                throw JSONCpp::JsonException(msg, __VA_ARGS__);	\
-        } while (false)
+	#define JSON_ASSERT_MESSAGE(cond, msg, ...)						\
+			do {													\
+				if (!(cond))										\
+					throw JSONCpp::JsonException{msg, __VA_ARGS__};	\
+			} while (false)
+
 #else
-	#define JSON_ASSERT_MESSAGE(cond, msg, ...)										\
-        do {																		\
-            if (!(cond))															\
-                JSONCpp::ReportError(#cond, __FILE__, __LINE__, msg, __VA_ARGS__);	\
+	#define JSON_ASSERT_MESSAGE(cond, msg, ...)															\
+        do {																							\
+            if (!(cond))																				\
+                JSONCpp::ReportError{JSON_GET_STRINGIFY(cond), __FILE__, __LINE__, msg, __VA_ARGS__};	\
         } while(false)
+
 #endif // JSON_EXCEPTION
