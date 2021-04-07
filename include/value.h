@@ -311,38 +311,38 @@ public:
     MappedType&         At(const KeyType& Identifier);
     const MappedType&   At(const KeyType& Identifier) const;
 
-    MappedType&         operator[](const KeyType& Identifier)               {   return m_Values[Identifier];                }
-    MappedType&         operator[](KeyType&& Identifier)                    {   return m_Values[std::move(Identifier)];     }
+    MappedType&         operator[](const KeyType& Identifier)               {   return m_Values[Identifier];                        }
+    MappedType&         operator[](KeyType&& Identifier)                    {   return m_Values[std::move(Identifier)];             }
 
     // Iterator
-    auto                Begin() noexcept                                    {   return m_Values.begin();                    }
-    auto                End() noexcept                                      {   return m_Values.end();                      }
-    auto                CBegin() const noexcept                             {   return m_Values.cbegin();                   }
-    auto                CEnd() const noexcept                               {   return m_Values.cend();                     }
-    auto                RBegin() noexcept                                   {   return m_Values.rbegin();                   }
-    auto                REnd() noexcept                                     {   return m_Values.rend();                     }
-    auto                CRBegin() const noexcept                            {   return m_Values.crbegin();                  }
-    auto                CREnd() const noexcept                              {   return m_Values.crend();                    }
+    auto                Begin() noexcept                                    {   return m_Values.begin();                            }
+    auto                End() noexcept                                      {   return m_Values.end();                              }
+    auto                CBegin() const noexcept                             {   return m_Values.cbegin();                           }
+    auto                CEnd() const noexcept                               {   return m_Values.cend();                             }
+    auto                RBegin() noexcept                                   {   return m_Values.rbegin();                           }
+    auto                REnd() noexcept                                     {   return m_Values.rend();                             }
+    auto                CRBegin() const noexcept                            {   return m_Values.crbegin();                          }
+    auto                CREnd() const noexcept                              {   return m_Values.crend();                            }
 
     // Lookup
     template<JsonType Type>
     bool                HasType(const KeyType& Identifier) const;
     bool                Has(const KeyType& Identifier) const;
-    Iterator            Find(const KeyType& Identifier)                     {   return m_Values.find(Identifier);           }
-    ConstIterator       Find(const KeyType& Identifier) const               {   return m_Values.find(Identifier);           }
+    Iterator            Find(const KeyType& Identifier)                     {   return m_Values.find(Identifier);                   }
+    ConstIterator       Find(const KeyType& Identifier) const               {   return m_Values.find(Identifier);                   }
     uint32_t            Count(JsonType Type) const noexcept;
     bool                Contains(JsonType Type) const noexcept;
 
     // Capacity
-    bool                Empty() const noexcept                              {   return m_Values.empty();                    }
-    auto                Size() const noexcept                               {   return m_Values.size();                     }
+    bool                Empty() const noexcept                              {   return m_Values.empty();                            }
+    auto                Size() const noexcept                               {   return m_Values.size();                             }
 
     // Modifiers
-    void                Clear() noexcept                                    {   m_Values.clear();                           }
+    void                Clear() noexcept                                    {   m_Values.clear();                                   }
     void                Erase(const KeyType& Identifier);
-    void                Erase(ConstIterator Where)                          {   m_Values.erase(Where);                      }
-    bool                Insert(const ValueType& Value)                      {   m_Values.insert(Value).second;              }
-    bool                Insert(ValueType&& Value)                           {   m_Values.insert(std::move(Value)).second;   }
+    void                Erase(ConstIterator Where)                          {   m_Values.erase(Where);                              }
+    bool                Insert(const ValueType& Value)                      {   return m_Values.insert(Value).second;               }
+    bool                Insert(ValueType&& Value)                           {   return m_Values.insert(std::move(Value)).second;    }
     bool                Insert(const KeyType& Identifier, MappedType Value);
     bool                Insert(KeyType&& Identifier, MappedType Value);
     MappedType          Extract(ConstIterator Where);
@@ -353,8 +353,8 @@ public:
     bool                GetMap(CPointerMap& OutMap) const override;
 
     // Comparison
-    bool                operator==(const JsonObject& Rhs) const noexcept    {   return m_Values == Rhs.m_Values;            }
-    bool                operator!=(const JsonObject& Rhs) const noexcept    {   return !(*this == Rhs);                     }
+    bool                operator==(const JsonObject& Rhs) const noexcept    {   return m_Values == Rhs.m_Values;                    }
+    bool                operator!=(const JsonObject& Rhs) const noexcept    {   return !(*this == Rhs);                             }
 
 private:
     ContainerType m_Values;
