@@ -54,10 +54,16 @@ private:
 
     bool        MatchExpectedToken(JsonTokenType Token) const noexcept;
 
+    uint32_t    MergeTokens() noexcept                              {   return 0;                                                                   }
+    
+    template<class T, class ...Args>
+    uint32_t    MergeTokens(T&& Token, Args&& ...Tokens) noexcept   {   return (static_cast<uint32_t>(Token) | MergeTokens(Tokens...));             }
+    
     template<class ...Args>
-    void        SetExpectedToken(Args&& ...Tokens) noexcept    {   m_PrevToken = m_ExpectedToken; m_ExpectedToken = MergeTokens(Tokens...);    }
+    void        SetExpectedToken(Args&& ...Tokens) noexcept         {   m_PrevToken = m_ExpectedToken; m_ExpectedToken = MergeTokens(Tokens...);    }
+    
     template<class ...Args>
-    void        AppendExpectedToken(Args&& ...Tokens) noexcept {   m_ExpectedToken |= MergeTokens(Tokens...);                                  }
+    void        AppendExpectedToken(Args&& ...Tokens) noexcept      {   m_ExpectedToken |= MergeTokens(Tokens...);                                  }
     
 private:
     std::stack<ParseState>  m_ParseProcessState;
@@ -73,10 +79,18 @@ protected:
     explicit JsonStringReader(std::string&& Content) : m_Content(std::move(Content)) {}
 
 public:
+    using UniquePointer = std::unique_ptr<JsonStringReader>;
+
     virtual ~JsonStringReader() = default;
 
-    JSON_NODISCARD static auto Create(const std::string& Content)   {   return std::unique_ptr<JsonStringReader>(new JsonStringReader(Content));                }
-    JSON_NODISCARD static auto Create(std::string&& Content)        {   return std::unique_ptr<JsonStringReader>(new JsonStringReader(std::move(Content)));     }
+    JSON_NODISCARD static UniquePointer Create(const std::string& Content)
+    {
+        return UniquePointer(new JsonStringReader(Content));
+    }
+    JSON_NODISCARD static UniquePointer Create(std::string&& Content)
+    {
+        return UniquePointer(new JsonStringReader(std::move(Content)));
+    }
 
     bool Deserialize(std::shared_ptr<JsonValue>& Root) override;
 
@@ -90,9 +104,14 @@ protected:
     explicit JsonStreamReader(std::basic_istream<char>& IStream);
 
 public:
+    using UniquePointer = std::unique_ptr<JsonStreamReader>;
+
     virtual ~JsonStreamReader() = default;
 
-    JSON_NODISCARD static auto Create(std::basic_istream<char>& IStream)    {   return std::unique_ptr<JsonStreamReader>(new JsonStreamReader(IStream));    }
+    JSON_NODISCARD static UniquePointer Create(std::basic_istream<char>& IStream)
+    {
+        return UniquePointer(new JsonStreamReader(IStream));
+    }
 };
 
 class JSON_API JsonReaderFactory
@@ -101,9 +120,18 @@ class JSON_API JsonReaderFactory
     using EnableIfString = typename std::enable_if<std::is_convertible<STR, std::string>::value>::type;
 
 public:
+    using StringReaderPointer = std::unique_ptr<JsonStringReader>;
+    using StreamReaderPointer = std::unique_ptr<JsonStreamReader>;
+
     template<class String, class = EnableIfString<String>>
-    JSON_NODISCARD static auto Create(String&& Content)                    {   return JsonStringReader::Create(std::forward<String>(Content));  }
-    JSON_NODISCARD static auto Create(std::basic_istream<char>& IStream)   {   return JsonStreamReader::Create(IStream);                        }
+    JSON_NODISCARD static StringReaderPointer Create(String&& Content)
+    {
+        return JsonStringReader::Create(std::forward<String>(Content));
+    }
+    JSON_NODISCARD static StreamReaderPointer Create(std::basic_istream<char>& IStream)
+    {
+        return JsonStreamReader::Create(IStream);
+    }
 
 };
 

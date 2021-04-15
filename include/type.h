@@ -33,15 +33,4 @@ enum class JsonTokenType : uint32_t
     AnyValue    = Null | Boolean | Number | String | ArrayBegin | ObjectBegin
 };
 
-inline uint32_t MergeTokens() noexcept
-{ 
-    return 0;
-}
-
-template<class T, class ...Args>
-uint32_t MergeTokens(T&& Token, Args&& ...Tokens) noexcept
-{
-    return (static_cast<uint32_t>(Token) | MergeTokens(Tokens...));
-}
-
 JSONCPP_NAMESPACE_END
