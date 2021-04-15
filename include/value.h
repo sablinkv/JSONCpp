@@ -150,65 +150,75 @@ private:
 class JSON_API JsonString : public JsonValue
 {
 public:
-    using ValueType = StringType;
+    using ValueType             = StringType;
+    using SizeType              = typename ValueType::size_type;
+    using Pointer               = typename ValueType::pointer;
+    using ConstPointer          = typename ValueType::const_pointer;
+    using Reference             = typename ValueType::reference;
+    using ConstReference        = typename ValueType::const_reference;
+    
+    using Iterator              = typename ValueType::iterator;
+    using ConstIterator         = typename ValueType::const_iterator;
+    using ReverseIterator       = typename ValueType::reverse_iterator;
+    using ConstReverseIterator  = typename ValueType::const_reverse_iterator;
 
-                JsonString(const char* Src, uint32_t Length);
-                JsonString(const char* First, const char* Last);
-    explicit    JsonString(const char* Src);
-    explicit    JsonString(const ValueType& Value);
-    explicit    JsonString(ValueType&& Value) noexcept;
+                            JsonString(const char* Src, uint32_t Length);
+                            JsonString(const char* First, const char* Last);
+    explicit                JsonString(const char* Src);
+    explicit                JsonString(const ValueType& Value);
+    explicit                JsonString(ValueType&& Value) noexcept;
 
-    JsonString& operator=(const ValueType& Value);
-    JsonString& operator=(ValueType&& Value) noexcept;
+    JsonString&             operator=(const ValueType& Value);
+    JsonString&             operator=(ValueType&& Value) noexcept;
 
-    StringType  GetString() const noexcept                                      {   return m_String;                                            }
-    bool        GetString(ValueType& OutString) const override                  {   OutString = m_String; return true;                          }
+    StringType              GetString() const noexcept                                      {   return m_String;                                            }
+    bool                    GetString(ValueType& OutString) const override                  {   OutString = m_String; return true;                          }
     
     // Element access
-    char&       At(uint32_t Index);
-    const char& At(uint32_t Index) const;
-    auto        Data() const noexcept                                           {   return m_String.data();                                     }
-    auto        C_Str() const noexcept                                          {   return m_String.c_str();                                    }
+    Reference               At(uint32_t Index);
+    ConstReference          At(uint32_t Index) const;
+    ConstPointer            Data() const noexcept                                           {   return m_String.data();                                     }
+    ConstPointer            C_Str() const noexcept                                          {   return m_String.c_str();                                    }
 
-    char&       operator[](uint32_t Index) noexcept                             {   return m_String[Index];                                     }
-    const char& operator[](uint32_t Index) const noexcept                       {   return m_String[Index];                                     }
+    Reference               operator[](uint32_t Index) noexcept                             {   return m_String[Index];                                     }
+    ConstReference          operator[](uint32_t Index) const noexcept                       {   return m_String[Index];                                     }
 
     // Iterator
-    auto        Begin() noexcept                                                {   return m_String.begin();                                    }
-    auto        End() noexcept                                                  {   return m_String.end();                                      }
-    auto        CBegin() const noexcept                                         {   return m_String.cbegin();                                   }
-    auto        CEnd() const noexcept                                           {   return m_String.cend();                                     }
-    auto        RBegin() noexcept                                               {   return m_String.rbegin();                                   }
-    auto        REnd() noexcept                                                 {   return m_String.rend();                                     }
-    auto        CRbegin() const noexcept                                        {   return m_String.crbegin();                                  }
-    auto        CREnd() const noexcept                                          {   return m_String.crend();                                    }
+    Iterator                Begin() noexcept                                                {   return m_String.begin();                                    }
+    Iterator                End() noexcept                                                  {   return m_String.end();                                      }
+    ConstIterator           CBegin() const noexcept                                         {   return m_String.cbegin();                                   }
+    ConstIterator           CEnd() const noexcept                                           {   return m_String.cend();                                     }
+    ReverseIterator         RBegin() noexcept                                               {   return m_String.rbegin();                                   }
+    ReverseIterator         REnd() noexcept                                                 {   return m_String.rend();                                     }
+    ConstReverseIterator    CRbegin() const noexcept                                        {   return m_String.crbegin();                                  }
+    ConstReverseIterator    CREnd() const noexcept                                          {   return m_String.crend();                                    }
 
     // Capacity
-    bool        Empty() const noexcept                                          {   return m_String.empty();                                    }
-    auto        Size() const noexcept                                           {   return m_String.size();                                     }
-    auto        Length() const noexcept                                         {   return m_String.length();                                   }
-    auto        Capacity() const noexcept                                       {   return m_String.capacity();                                 }
-    auto        MaxSize() const noexcept                                        {   return m_String.max_size();                                 }
-    void        Reserve(uint32_t Count)                                         {   m_String.reserve(Count);                                    }
+    bool                    Empty() const noexcept                                          {   return m_String.empty();                                    }
+    SizeType                Size() const noexcept                                           {   return m_String.size();                                     }
+    SizeType                Length() const noexcept                                         {   return m_String.length();                                   }
+    SizeType                Capacity() const noexcept                                       {   return m_String.capacity();                                 }
+    SizeType                MaxSize() const noexcept                                        {   return m_String.max_size();                                 }
+    void                    Reserve(uint32_t Count)                                         {   m_String.reserve(Count);                                    }
 
     // Modifiers
-    void        Clear() noexcept                                                {   m_String.clear();                                           }
-    void        PopBack() noexcept                                              {   m_String.pop_back();                                        }
-    void        PushBack(const char Char)                                       {   m_String.push_back(Char);                                   }
-    void        Resize(uint32_t Count)                                          {   m_String.resize(Count);                                     }
-    void        Resize(uint32_t Count, char Char)                               {   m_String.resize(Count, Char);                               }
+    void                    Clear() noexcept                                                {   m_String.clear();                                           }
+    void                    PopBack() noexcept                                              {   m_String.pop_back();                                        }
+    void                    PushBack(const char Char)                                       {   m_String.push_back(Char);                                   }
+    void                    Resize(uint32_t Count)                                          {   m_String.resize(Count);                                     }
+    void                    Resize(uint32_t Count, char Char)                               {   m_String.resize(Count, Char);                               }
 
     template<class FwdIter>
-    JsonString& Append(FwdIter First, FwdIter Last)                             {   m_String.append(First, Last); return *this;                 }
-    JsonString& Append(uint32_t Count, const char Char)                         {   m_String.append(Count, Char); return *this;                 }
-    JsonString& Append(const JsonString& Other)                                 {   m_String.append(Other.m_String); return *this;              }
-    JsonString& Append(const JsonString& Other, uint32_t Pos, uint32_t Count)   {   m_String.append(Other.m_String, Pos, Count);  return *this; }
-    JsonString& Append(const char* Src, uint32_t Count)                         {   m_String.append(Src, Count); return *this;                  }
-    JsonString& Append(const char* Src)                                         {   m_String.append(Src); return *this;                         }
+    JsonString&             Append(FwdIter First, FwdIter Last)                             {   m_String.append(First, Last); return *this;                 }
+    JsonString&             Append(uint32_t Count, const char Char)                         {   m_String.append(Count, Char); return *this;                 }
+    JsonString&             Append(const JsonString& Other)                                 {   m_String.append(Other.m_String); return *this;              }
+    JsonString&             Append(const JsonString& Other, uint32_t Pos, uint32_t Count)   {   m_String.append(Other.m_String, Pos, Count);  return *this; }
+    JsonString&             Append(const char* Src, uint32_t Count)                         {   m_String.append(Src, Count); return *this;                  }
+    JsonString&             Append(const char* Src)                                         {   m_String.append(Src); return *this;                         }
 
     // Comparison
-    bool        operator==(const JsonString& Rhs) const noexcept                {   return m_String == Rhs.m_String;                            }
-    bool        operator!=(const JsonString& Rhs) const noexcept                {   return !(*this == Rhs);                                     }
+    bool                    operator==(const JsonString& Rhs) const noexcept                {   return m_String == Rhs.m_String;                            }
+    bool                    operator!=(const JsonString& Rhs) const noexcept                {   return !(*this == Rhs);                                     }
 
 private:
     ValueType m_String;
@@ -218,69 +228,79 @@ private:
 class JSON_API JsonArray : public JsonValue
 {
 public:
-    using ContainerType = ArrayContainerType;
-    using ValueType     = typename ContainerType::value_type;
-    using Iterator      = typename ContainerType::iterator;
-    using ConstIterator = typename ContainerType::const_iterator;
+    using ContainerType         = ArrayContainerType;
 
-                        JsonArray() : JsonValue(JsonType::Array)                {}
-    explicit            JsonArray(const ContainerType& Array);
-    explicit            JsonArray(ContainerType&& Array) noexcept;
+    using ValueType             = typename ContainerType::value_type;
+    using SizeType              = typename ContainerType::size_type;
+    using Pointer               = typename ContainerType::pointer;
+    using ConstPointer          = typename ContainerType::const_pointer;  
+    using Reference             = typename ContainerType::reference;
+    using ConstReference        = typename ContainerType::const_reference;
+    
+    using Iterator              = typename ContainerType::iterator;
+    using ConstIterator         = typename ContainerType::const_iterator;
+    using ReverseIterator       = typename ContainerType::reverse_iterator;
+    using ConstReverseIterator  = typename ContainerType::const_reverse_iterator;
 
-    JsonArray&          operator=(const ContainerType& Array);
-    JsonArray&          operator=(ContainerType&& Array) noexcept;
+
+                            JsonArray() : JsonValue(JsonType::Array)                {}
+    explicit                JsonArray(const ContainerType& Array);
+    explicit                JsonArray(ContainerType&& Array) noexcept;
+
+    JsonArray&              operator=(const ContainerType& Array);
+    JsonArray&              operator=(ContainerType&& Array) noexcept;
     
     // Element access
     template<class Return = JsonValue>
-    TSharedPtr<Return>  GetValueAs(uint32_t Index) const;
+    TSharedPtr<Return>      GetValueAs(uint32_t Index) const;
 
-    ValueType&          At(uint32_t Index);
-    const ValueType&    At(uint32_t Index) const;
+    ValueType&              At(uint32_t Index);
+    const ValueType&        At(uint32_t Index) const;
 
-    auto                Front() noexcept                                        {   return m_Array.front();         }
-    auto                Front() const noexcept                                  {   return m_Array.front();         }
-    auto                Back() noexcept                                         {   return m_Array.back();          }
-    auto                Back() const noexcept                                   {   return m_Array.back();          }
-    auto                Data() noexcept                                         {   return m_Array.data();          }
-    auto                Data() const noexcept                                   {   return m_Array.data();          }
+    Reference               Front() noexcept                                        {   return m_Array.front();         }
+    ConstReference          Front() const noexcept                                  {   return m_Array.front();         }
+    Reference               Back() noexcept                                         {   return m_Array.back();          }
+    ConstReference          Back() const noexcept                                   {   return m_Array.back();          }
+    Pointer                 Data() noexcept                                         {   return m_Array.data();          }
+    ConstPointer            Data() const noexcept                                   {   return m_Array.data();          }
 
-    auto                operator[](uint32_t Index) noexcept                     {   return m_Array[Index];          }
-    auto                operator[](uint32_t Index) const noexcept               {   return m_Array[Index];          }
+    Reference               operator[](uint32_t Index) noexcept                     {   return m_Array[Index];          }
+    ConstReference          operator[](uint32_t Index) const noexcept               {   return m_Array[Index];          }
 
     // Iterator
-    auto                Begin() noexcept                                        {   return m_Array.begin();         }
-    auto                End() noexcept                                          {   return m_Array.end();           }
-    auto                CBegin() const noexcept                                 {   return m_Array.cbegin();        }
-    auto                CEnd() const noexcept                                   {   return m_Array.cend();          }
-    auto                RBegin() noexcept                                       {   return m_Array.rbegin();        }
-    auto                REnd() noexcept                                         {   return m_Array.rend();          }
-    auto                CRbegin() const noexcept                                {   return m_Array.crbegin();       }
-    auto                CREnd() const noexcept                                  {   return m_Array.crend();         }
+    Iterator                Begin() noexcept                                        {   return m_Array.begin();         }
+    Iterator                End() noexcept                                          {   return m_Array.end();           }
+    ConstIterator           CBegin() const noexcept                                 {   return m_Array.cbegin();        }
+    ConstIterator           CEnd() const noexcept                                   {   return m_Array.cend();          }
+    ReverseIterator         RBegin() noexcept                                       {   return m_Array.rbegin();        }
+    ReverseIterator         REnd() noexcept                                         {   return m_Array.rend();          }
+    ConstReverseIterator    CRbegin() const noexcept                                {   return m_Array.crbegin();       }
+    ConstReverseIterator    CREnd() const noexcept                                  {   return m_Array.crend();         }
 
     // Lookup
     template<JsonType Type>
-    bool                HasType(uint32_t Index) const                           {   return At(Index)->Is<Type>();   }
+    bool                    HasType(uint32_t Index) const                           {   return At(Index)->Is<Type>();   }
 
     // Capacity             
-    bool                Empty() const noexcept                                  {   return m_Array.empty();         }
-    auto                Size() const noexcept                                   {   return m_Array.size();          }
-    auto                Capacity() const noexcept                               {   return m_Array.capacity();      }
-    void                Reserve(uint32_t Size)                                  {   m_Array.reserve(Size);          }
+    bool                    Empty() const noexcept                                  {   return m_Array.empty();         }
+    SizeType                Size() const noexcept                                   {   return m_Array.size();          }
+    SizeType                Capacity() const noexcept                               {   return m_Array.capacity();      }
+    void                    Reserve(uint32_t Size)                                  {   m_Array.reserve(Size);          }
 
     // Modifiers
-    void                Clear() noexcept                                        {   m_Array.clear();                }
-    void                PopBack() noexcept                                      {   m_Array.pop_back();             }
-    void                PushBack(ValueType Value)                               {   m_Array.push_back(Value);       }
-    void                Erase(ConstIterator Where) noexcept                     {   m_Array.erase(Where);           }
-    void                Insert(ConstIterator Where, ValueType Value)            {   m_Array.insert(Where, Value);   }
-    void                Resize(uint32_t Count, ValueType Value = ValueType())   {   m_Array.resize(Count, Value);   }
+    void                    Clear() noexcept                                        {   m_Array.clear();                }
+    void                    PopBack() noexcept                                      {   m_Array.pop_back();             }
+    void                    PushBack(ValueType Value)                               {   m_Array.push_back(Value);       }
+    void                    Erase(ConstIterator Where) noexcept                     {   m_Array.erase(Where);           }
+    void                    Insert(ConstIterator Where, ValueType Value)            {   m_Array.insert(Where, Value);   }
+    void                    Resize(uint32_t Count, ValueType Value = ValueType())   {   m_Array.resize(Count, Value);   }
 
-    bool                GetArray(PointerArray& OutArray) override;
-    bool                GetArray(CPointerArray& OutArray) const override;
+    bool                    GetArray(PointerArray& OutArray) override;
+    bool                    GetArray(CPointerArray& OutArray) const override;
 
     // Comparison
-    bool                operator==(const JsonArray& Rhs) const noexcept         {   return m_Array == Rhs.m_Array;  }
-    bool                operator!=(const JsonArray& Rhs) const noexcept         {   return !(*this == Rhs);         }
+    bool                    operator==(const JsonArray& Rhs) const noexcept         {   return m_Array == Rhs.m_Array;  }
+    bool                    operator!=(const JsonArray& Rhs) const noexcept         {   return !(*this == Rhs);         }
     
 private:
     ContainerType m_Array;
@@ -290,39 +310,44 @@ private:
 class JSON_API JsonObject : public JsonValue
 {
 public:
-    using ContainerType = ObjectContainerType;
-    using KeyType       = typename ContainerType::key_type;
-    using MappedType    = typename ContainerType::mapped_type;
-    using ValueType     = typename ContainerType::value_type;
-    using Iterator      = typename ContainerType::iterator;
-    using ConstIterator = typename ContainerType::const_iterator;
+    using ContainerType         = ObjectContainerType;
 
-                        JsonObject() : JsonValue(JsonType::Object)  {}
-    explicit            JsonObject(const ContainerType& Values);
-    explicit            JsonObject(ContainerType&& Values) noexcept;
+    using KeyType               = typename ContainerType::key_type;
+    using MappedType            = typename ContainerType::mapped_type;
+    using ValueType             = typename ContainerType::value_type;
+    using SizeType              = typename ContainerType::size_type;
 
-    JsonObject&         operator=(const ContainerType& Values);
-    JsonObject&         operator=(ContainerType&& Values) noexcept;
+    using Iterator              = typename ContainerType::iterator;
+    using ConstIterator         = typename ContainerType::const_iterator;
+    using ReverseIterator       = typename ContainerType::reverse_iterator;
+    using ConstReverseIterator  = typename ContainerType::const_reverse_iterator;
+
+                            JsonObject() : JsonValue(JsonType::Object)  {}
+    explicit                JsonObject(const ContainerType& Values);
+    explicit                JsonObject(ContainerType&& Values) noexcept;
+
+    JsonObject&             operator=(const ContainerType& Values);
+    JsonObject&             operator=(ContainerType&& Values) noexcept;
 
     // Element access
     template<class Return = JsonValue>
-    TSharedPtr<Return>  GetValueAs(const KeyType& Identifier) const;
+    TSharedPtr<Return>      GetValueAs(const KeyType& Identifier) const;
 
-    MappedType&         At(const KeyType& Identifier);
-    const MappedType&   At(const KeyType& Identifier) const;
+    MappedType&             At(const KeyType& Identifier);
+    const MappedType&       At(const KeyType& Identifier) const;
 
-    MappedType&         operator[](const KeyType& Identifier)               {   return m_Values[Identifier];                        }
-    MappedType&         operator[](KeyType&& Identifier)                    {   return m_Values[std::move(Identifier)];             }
+    MappedType&             operator[](const KeyType& Identifier)               {   return m_Values[Identifier];                        }
+    MappedType&             operator[](KeyType&& Identifier)                    {   return m_Values[std::move(Identifier)];             }
 
     // Iterator
-    auto                Begin() noexcept                                    {   return m_Values.begin();                            }
-    auto                End() noexcept                                      {   return m_Values.end();                              }
-    auto                CBegin() const noexcept                             {   return m_Values.cbegin();                           }
-    auto                CEnd() const noexcept                               {   return m_Values.cend();                             }
-    auto                RBegin() noexcept                                   {   return m_Values.rbegin();                           }
-    auto                REnd() noexcept                                     {   return m_Values.rend();                             }
-    auto                CRBegin() const noexcept                            {   return m_Values.crbegin();                          }
-    auto                CREnd() const noexcept                              {   return m_Values.crend();                            }
+    Iterator                Begin() noexcept                                    {   return m_Values.begin();                            }
+    Iterator                End() noexcept                                      {   return m_Values.end();                              }
+    ConstIterator           CBegin() const noexcept                             {   return m_Values.cbegin();                           }
+    ConstIterator           CEnd() const noexcept                               {   return m_Values.cend();                             }
+    ReverseIterator         RBegin() noexcept                                   {   return m_Values.rbegin();                           }
+    ReverseIterator         REnd() noexcept                                     {   return m_Values.rend();                             }
+    ConstReverseIterator    CRBegin() const noexcept                            {   return m_Values.crbegin();                          }
+    ConstReverseIterator    CREnd() const noexcept                              {   return m_Values.crend();                            }
 
     // Lookup
     template<JsonType Type>
@@ -335,7 +360,7 @@ public:
 
     // Capacity
     bool                Empty() const noexcept                              {   return m_Values.empty();                            }
-    auto                Size() const noexcept                               {   return m_Values.size();                             }
+    SizeType            Size() const noexcept                               {   return m_Values.size();                             }
 
     // Modifiers
     void                Clear() noexcept                                    {   m_Values.clear();                                   }

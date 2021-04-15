@@ -12,15 +12,6 @@ template<> struct DefineJson<JsonString>    {   static constexpr JsonType Type =
 template<> struct DefineJson<JsonArray>     {   static constexpr JsonType Type = JsonType::Array;   };
 template<> struct DefineJson<JsonObject>    {   static constexpr JsonType Type = JsonType::Object;  };
 
-template<class T>
-static constexpr JsonType DefineJsonType = DefineJson<T>::Type;
-
-template<class T>
-static constexpr bool IsArithmeticValue = std::is_arithmetic<T>::value;
-
-template<class T>
-static constexpr bool IsBaseOfJsonValue = std::is_base_of<JsonValue, T>::value;
-
 template<class T, class>
 inline JsonNumber::JsonNumber(const T& Value)
     : JsonValue(JsonType::Number)
@@ -31,7 +22,7 @@ inline JsonNumber::JsonNumber(const T& Value)
 template<class T>
 inline JsonNumber& JsonNumber::SetNumber(const T& Value)
 {
-    JSON_STATIC_ASSERT(IsArithmeticValue<T>);
+    JSON_STATIC_ASSERT(std::is_arithmetic<T>::value);
     m_Number = std::to_string(Value);
     return *this;
 }
@@ -39,7 +30,7 @@ inline JsonNumber& JsonNumber::SetNumber(const T& Value)
 template<class T>
 inline T JsonNumber::GetNumber() const
 {
-    JSON_STATIC_ASSERT(IsArithmeticValue<T>);
+    JSON_STATIC_ASSERT(std::is_arithmetic<T>::value);
     std::stringstream Stream;
     Stream << m_Number;
     T Value;
@@ -50,24 +41,26 @@ inline T JsonNumber::GetNumber() const
 template<class Return>
 inline JsonValue::TSharedPtr<Return> JsonArray::GetValueAs(uint32_t Index) const
 {
-    JSON_STATIC_ASSERT(IsBaseOfJsonValue<Return>);
+    using IsBaseOfJsonValue = std::is_base_of<JsonValue, Return>;
+    JSON_STATIC_ASSERT(IsBaseOfJsonValue::value);
     auto Value = At(Index);
-    if (!Value->Is<DefineJsonType<Return>>())
-        TypeCastErrorMessage(DefineJsonType<Return>);
+    if (!Value->Is<DefineJson<Return>::Type>())
+        TypeCastErrorMessage(DefineJson<Return>::Type);
     return std::dynamic_pointer_cast<Return>(Value);
 }
 
 template<class Return>
 inline JsonValue::TSharedPtr<Return> JsonObject::GetValueAs(const KeyType& Identifier) const
 {
-    JSON_STATIC_ASSERT(IsBaseOfJsonValue<Return>);
+    using IsBaseOfJsonValue = std::is_base_of<JsonValue, Return>;
+    JSON_STATIC_ASSERT(IsBaseOfJsonValue::value);
     auto Found = m_Values.find(Identifier);
     if (Found == m_Values.end())
         return nullptr;
    
     auto Value = Found->second;
-    if (!Value->Is<DefineJsonType<Return>>())
-        TypeCastErrorMessage(DefineJsonType<Return>);
+    if (!Value->Is<DefineJson<Return>::Type>())
+        TypeCastErrorMessage(DefineJson<Return>::Type);
     return std::dynamic_pointer_cast<Return>(Value);
 }
 
