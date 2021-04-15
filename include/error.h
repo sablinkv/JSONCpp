@@ -6,12 +6,12 @@
 
 JSONCPP_NAMESPACE_BEGIN
 
-struct JSON_API ReportError
+struct JSON_API JsonReportError
 {
     static constexpr size_t Size = 1024;
 
     template<class... Types>
-    ReportError(const char* Cond, const char* File, unsigned int Line, const char* const Msg, Types ...Args)
+    JsonReportError(const char* Cond, const char* File, unsigned int Line, const char* const Msg, Types ...Args)
     {
         char MsgBuffer[Size];
         GetVaArgs(MsgBuffer, Size, Msg, Args...);
@@ -30,7 +30,7 @@ struct JSON_API ReportError
         return Length;
     }
 
-    ~ReportError() { abort(); }
+    ~JsonReportError() { abort(); }
 };
 
 class JSON_API JsonException : public std::exception {
@@ -41,8 +41,8 @@ public:
     JsonException(const std::string& Msg, Types&& ...Args)
     {
         if (sizeof...(Types) > 0) {
-            char Buffer[ReportError::Size];
-            int Length = ReportError::GetVaArgs(Buffer, ReportError::Size, Msg.c_str(), Args...);
+            char Buffer[JsonReportError::Size];
+            int Length = JsonReportError::GetVaArgs(Buffer, JsonReportError::Size, Msg.c_str(), Args...);
             m_Message = std::string(Buffer, Length);
         }
         else {

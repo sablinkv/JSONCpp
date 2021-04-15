@@ -1,29 +1,21 @@
 #pragma once
 
-//
+// 
 #define JSON_STRINGIFY(x) JSON_GET_STRINGIFY(x)
 #define JSON_GET_STRINGIFY(x) #x
 
-//
+// 
 #ifndef JSONCPP_NAMESPACE
 #define JSONCPP_NAMESPACE JSONCpp
-#endif // !JSONCPP_NAMESPACE
+#endif // JSONCPP_NAMESPACE
 
 #ifndef JSONCPP_NAMESPACE_BEGIN
 #define JSONCPP_NAMESPACE_BEGIN namespace JSONCPP_NAMESPACE {
-#endif // !JSONCPP_NAMESPACE_BEGIN
+#endif // JSONCPP_NAMESPACE_BEGIN
 
 #ifndef JSONCPP_NAMESPACE_END
 #define JSONCPP_NAMESPACE_END }
-#endif // !JSONCPP_NAMESPACE_END
-
-//
-#ifdef JSON_USE_EXCEPTION
-#include <exception>
-	#define JSON_EXCEPTION 1
-#else
-	#define JSON_EXCEPTION 0
-#endif // JSON_USE_EXCEPTION
+#endif // JSONCPP_NAMESPACE_END
 
 //
 #ifdef JSON_DLL_BUILD
@@ -32,10 +24,12 @@
 	#elif defined(__GNUC__) || defined(__clang__)
 		#define JSON_API __attribute__((visibility("default")))
 	#endif
-#elif defined(JSON_DLL)
+#else
 	#if defined(_MSC_VER) || defined(__MINGW32__)
 		#define JSON_API __declspec(dllimport)
-	#endif // !JSON_DLL
+	#elif defined(__GNUC__) || defined(__clang__)
+		#define JSON_API __attribute__((visibility("hidden")))
+	#endif
 #endif // JSON_DLL_BUILD
 
 #ifndef JSON_API
@@ -43,49 +37,38 @@
 #endif // JSON_API
 
 //
-#if (__cplusplus >= 201703L)
-	#define JSON_HAS_CPP17 1
-#else
-	#define JSON_HAS_CPP17 0
-#endif
+#ifdef __has_cpp_attribute
+	#if __has_cpp_attribute(fallthrough)
+		#define JSON_FALLTHROUGH [[fallthrough]]
+	#else
+		#define JSON_FALLTHROUGH
+	#endif // __has_cpp_attribute(fallthrough)
+	
+	#if __has_cpp_attribute(nodiscard)
+		#define JSON_NODISCARD [[nodiscard]]
+	#else
+		#define JSON_NODISCARD
+	#endif // __has_cpp_attribute(nodiscard)
 
-//
-#if JSON_HAS_CPP17
-	#define JSON_NODISCARD [[nodiscard]]
-	#define JSON_FALLTHROUGH [[fallthrough]]
-#else
-	#define JSON_NODISCARD
-	#define JSON_FALLTHROUGH
-#endif // JSON_HAS_CPP17
-
-//
-#if JSON_HAS_CPP17
-	#define JSON_IF_CONSTEXPR if constexpr
-#else
-	#define JSON_IF_CONSTEXPR if
-#endif // JSON_HAS_CPP17
+#endif // __has_cpp_attribute
 
 //
 #ifndef JSON_ASSERT
 #include <cassert>
 	#define JSON_ASSERT(cond) assert((cond))
-#endif // !JSON_ASSERT
-
-//
-#ifndef JSON_STATIC_ASSERT_MESSAGE
-	#define JSON_STATIC_ASSERT_MESSAGE(cond, msg) static_assert(cond, msg)
-#endif // !JSON_STATIC_ASSERT_MESSAGE
+#endif // JSON_ASSERT
 
 #ifndef JSON_STATIC_ASSERT
-	#if JSON_HAS_CPP17
+	#if (defined(__GNUC__) && __GNUC__ >= 6) || (defined(_MSC_VER) && _MSC_VER >= 1910)
 		#define JSON_STATIC_ASSERT(cond) static_assert(cond)
 	#else
-		#define JSON_STATIC_ASSERT(x) static_assert(x, JSON_STRINGIFY(x))
-	#endif // JSON_HAS_CPP17
-#endif // !JSON_STATIC_ASSERT
+		#define JSON_STATIC_ASSERT(cond) static_assert(cond, JSON_STRINGIFY(cond))
+	#endif
+#endif // JSON_STATIC_ASSERT
 
 //
-#if JSON_EXCEPTION
+#ifdef JSON_USE_EXCEPTION
+#include <exception>
 	#define JSON_ASSERT_MESSAGE(cond, msg, ...)						\
 			do {													\
 				if (!(cond))										\
@@ -93,10 +76,10 @@
 			} while (false)
 
 #else
-	#define JSON_ASSERT_MESSAGE(cond, msg, ...)															\
-        do {																							\
-            if (!(cond))																				\
-                JSONCpp::ReportError{JSON_GET_STRINGIFY(cond), __FILE__, __LINE__, msg, __VA_ARGS__};	\
+	#define JSON_ASSERT_MESSAGE(cond, msg, ...)																\
+        do {																								\
+            if (!(cond))																					\
+                JSONCpp::JsonReportError{JSON_GET_STRINGIFY(cond), __FILE__, __LINE__, msg, __VA_ARGS__};	\
         } while(false)
 
-#endif // JSON_EXCEPTION
+#endif // JSON_USE_EXCEPTION
