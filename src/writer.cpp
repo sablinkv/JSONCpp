@@ -146,3 +146,10 @@ bool Serializer::operator()(const std::shared_ptr<JsonValue>& Root, JsonWriter& 
 		return false;
 	return this->operator()(*Root, Writer);
 }
+
+std::ostream& JSONCpp::operator<<(std::ostream& Out, const JsonValue& Root)
+{
+	auto Writer = JsonWriterFactory::Create(&Out);
+	JSON_ASSERT_MESSAGE(Serializer()(Root, *Writer), "Invalid serialize JSON.");
+	return Out;
+}
