@@ -257,7 +257,7 @@ struct Utf
 		Encode(CodePoint, std::ostream_iterator<CharType, CharType>(OStream));
 	}
 
-	static auto Encode(uint32_t CodePoint)
+	static std::basic_string<CharType> Encode(uint32_t CodePoint)
 	{
 		std::basic_stringstream<CharType> SStream;
 		Encode(CodePoint, std::ostream_iterator<CharType, CharType>(SStream));
@@ -271,7 +271,7 @@ struct Utf
 	}
 
 	template<class InIter>
-	static auto Decode(InIter First, InIter Last)
+	static uint32_t Decode(InIter First, InIter Last)
 	{
 		uint32_t CodePoint;
 		Decode(First, Last, CodePoint);
@@ -284,7 +284,7 @@ struct Utf
 		Decode(is_iter(IStream), is_iter{}, CodePoint);
 	}
 
-	static auto Decode(std::basic_istream<CharType>& IStream)
+	static uint32_t Decode(std::basic_istream<CharType>& IStream)
 	{
 		uint32_t CodePoint;
 		Decode(IStream, CodePoint);
