@@ -17,7 +17,7 @@ endif()
 
 # Build examples
 if(BUILD_EXAMPLES)
-    # add_subdirectory(example)
+    add_subdirectory(example)
 endif(BUILD_EXAMPLES)
 
 # Build unit test
