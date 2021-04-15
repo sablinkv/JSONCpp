@@ -134,7 +134,7 @@ bool Serializer::operator()(const JsonValue& Root, JsonWriter& Writer) const
 	switch (Root.GetType())
 	{
 	case JsonType::Array: JSON_FALLTHROUGH;
-	case JsonType::Object: Writer.Serialize(static_cast<const JsonValue*>(&Root));
+	case JsonType::Object: Writer.Serialize(static_cast<const JsonValue*>(&Root)); break;
 	default: return false;
 	}
 	return true;

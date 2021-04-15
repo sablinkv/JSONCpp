@@ -34,11 +34,13 @@ protected:
 	explicit JsonStreamWriter(OStream* Stream, uint32_t Indent) : m_Stream(Stream), JsonWriter(Indent) {}
 
 public:
+	using UniquePointer = std::unique_ptr<JsonStreamWriter>;
+	
 	virtual ~JsonStreamWriter() = default;
 
-	JSON_NODISCARD static auto Create(OStream* Stream, uint32_t Indent = 2)
+	JSON_NODISCARD static UniquePointer Create(OStream* Stream, uint32_t Indent = 2)
 	{
-		return std::unique_ptr<JsonStreamWriter>(new JsonStreamWriter(Stream, Indent));
+		return UniquePointer(new JsonStreamWriter(Stream, Indent));
 	}
 
 	void Serialize(const JsonValue* Root) const override;
@@ -53,11 +55,13 @@ protected:
 	explicit JsonStringWriter(std::string* OutString, uint32_t Indent) : m_OutString(OutString), JsonWriter(Indent) {}
 
 public:
+	using UniquePointer = std::unique_ptr<JsonStringWriter>;
+
 	virtual ~JsonStringWriter() = default;
 
-	JSON_NODISCARD static auto Create(std::string* OutString, uint32_t Indent = 2)
+	JSON_NODISCARD static UniquePointer Create(std::string* OutString, uint32_t Indent = 2)
 	{
-		return std::unique_ptr<JsonStringWriter>(new JsonStringWriter(OutString, Indent));
+		return UniquePointer(new JsonStringWriter(OutString, Indent));
 	}
 
 	void Serialize(const JsonValue* Root) const override;
@@ -71,9 +75,17 @@ class JSON_API JsonWriterFactory
 public:
 	using OStream = std::basic_ostream<char>;
 	using String = std::basic_string<char>;
+	using StringWriterPointer = std::unique_ptr<JsonStringWriter>;
+    using StreamWriterPointer = std::unique_ptr<JsonStreamWriter>;
 
-	JSON_NODISCARD static auto Create(OStream* OutStream, int32_t Indent = 2)	{	return JsonStreamWriter::Create(OutStream, Indent);	}
-	JSON_NODISCARD static auto Create(String* OutString, int32_t Indent = 2)	{	return JsonStringWriter::Create(OutString, Indent);	}
+	JSON_NODISCARD static StreamWriterPointer Create(OStream* OutStream, int32_t Indent = 2)
+	{
+		return JsonStreamWriter::Create(OutStream, Indent);
+	}
+	JSON_NODISCARD static StringWriterPointer Create(String* OutString, int32_t Indent = 2)
+	{
+		return JsonStringWriter::Create(OutString, Indent);
+	}
 };
 
 struct JSON_API Serializer
